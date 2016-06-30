@@ -48,7 +48,18 @@ public class EmojiEditText extends EditText {
     public void addTextChangedListener(TextWatcher watcher) {
         super.addTextChangedListener(watcher);
     }
+    private CharSequence inputMsg;
 
+    //获取输入的内容 用于显示在TextView
+    public CharSequence getShowInputMsg() {
+        return inputMsg;
+    }
+
+    //获取输入的内容 用于显示发送到服务器
+    public String getSendInputMsg() {
+        String result = EmojiReplace.parseEmoji(inputMsg.toString());
+        return result;
+    }
     @Override
     public Editable getText() {
         return super.getText();
@@ -65,6 +76,7 @@ public class EmojiEditText extends EditText {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             CharSequence input = s.subSequence(start, start + count);
+            inputMsg=s;
             if (TextUtils.isEmpty(input) || isChange) {
                 isChange = false;
                 return;
