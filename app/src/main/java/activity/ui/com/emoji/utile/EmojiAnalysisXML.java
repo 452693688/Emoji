@@ -1,6 +1,5 @@
 package activity.ui.com.emoji.utile;
 
-import android.content.Context;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -11,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import activity.ui.com.emoji.activity.MainApplication;
+
 /**
  * Created by Administrator on 2016/6/29.
  */
@@ -20,19 +21,19 @@ public class EmojiAnalysisXML {
     private HashMap<String, ArrayList<String>> emoMap = new HashMap<String, ArrayList<String>>();
     private static EmojiAnalysisXML mParser;
 
-    private EmojiAnalysisXML(Context mContext) {
-         readMap(mContext);
+    private EmojiAnalysisXML( ) {
+         readMap();
     }
 
 
-    public static EmojiAnalysisXML getInstance(Context mContext) {
+    public static EmojiAnalysisXML getInstance() {
         if (mParser == null||mParser.convertMap.size()==0||mParser.emoMap.size()==0) {
-            mParser = new EmojiAnalysisXML(mContext);
+            mParser = new EmojiAnalysisXML();
         }
         return mParser;
     }
 
-    private void readMap(Context context) {
+    private void readMap() {
         convertMap = new HashMap<List<Integer>, String>();
         XmlPullParser xmlpull = null;
         String fromAttr = null;
@@ -41,7 +42,7 @@ public class EmojiAnalysisXML {
         try {
             XmlPullParserFactory xppf = XmlPullParserFactory.newInstance();
             xmlpull = xppf.newPullParser();
-            InputStream stream = context.getAssets().open("emoji.xml");
+            InputStream stream = MainApplication.context.getAssets().open("emoji.xml");
             xmlpull.setInput(stream, "UTF-8");
             int eventCode = xmlpull.getEventType();
             while (eventCode != XmlPullParser.END_DOCUMENT) {

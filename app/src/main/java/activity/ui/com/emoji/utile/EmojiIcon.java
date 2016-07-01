@@ -1,15 +1,17 @@
 package activity.ui.com.emoji.utile;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.Log;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import activity.ui.com.emoji.activity.MainApplication;
 
 /**
  * 转换成图片
@@ -22,37 +24,56 @@ public class EmojiIcon {
      * [e]1f3e0[/e]形式转化为 包内emoji图标
      *
      * @param content
-     * @param context
      * @return SpannableStringBuilder
      */
-    public static SpannableStringBuilder convertToEmoji(String content, Context context) {
+    public static SpannableStringBuilder convertToEmoji(String content) {
         Pattern pattern = Pattern.compile(regex);
         String emo = "";
         Matcher matcher = pattern.matcher(content);
         SpannableStringBuilder sBuilder = new SpannableStringBuilder(content);
-        Resources resources = null;
         while (matcher.find()) {
             emo = matcher.group();
-            if (resources == null) {
-                resources = context.getResources();
-            }
-            try {
-                String name = "emoji_" + emo.substring(emo.indexOf("]") + 1, emo.lastIndexOf("["));
-                String type = "mipmap";
-                String defPackage = "activity.ui.com.emoji";
-                int id = resources.getIdentifier(name, type, defPackage);
-                if (id != 0) {
-                    Drawable drawable = resources.getDrawable(id);
-                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                    ImageSpan span = new ImageSpan(drawable);
-                    sBuilder.setSpan(span, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-            } catch (Exception e) {
-                break;
+            String emojiUncode = emo.substring(emo.indexOf("]") + 1, emo.lastIndexOf("["));
+            ImageSpan span = emojiIcon(emojiUncode);
+            if (span != null) {
+                sBuilder.setSpan(span, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
         return sBuilder;
     }
+
+    private static Resources resources;
+    private static String pckName;
+
+    /***
+     * 获取一张emoji图片
+     *
+     * @param emojiUnicode
+     * @return
+     */
+    public static ImageSpan emojiIcon(String emojiUnicode) {
+        if (TextUtils.isEmpty(emojiUnicode)) {
+            return null;
+        }
+        if (resources == null) {
+            resources = MainApplication.context.getResources();
+        }
+        if (TextUtils.isEmpty(pckName)) {
+            pckName = MainApplication.context.getPackageName();
+        }
+        ImageSpan span = null;
+        String name = "emoji_" + emojiUnicode;
+        String type = "mipmap";
+        String defPackage = pckName;
+        int id = resources.getIdentifier(name, type, defPackage);
+        if (id != 0) {
+            Drawable drawable = resources.getDrawable(id);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            span = new ImageSpan(drawable);
+        }
+        return span;
+    }
+
     /**
      * Unicode转系统emoji图标  一个表情可能有2个unicode码
      *

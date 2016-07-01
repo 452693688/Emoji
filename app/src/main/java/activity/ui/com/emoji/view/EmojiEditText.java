@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.EditText;
 
-import activity.ui.com.emoji.utile.EmojiIcon;
 import activity.ui.com.emoji.utile.EmojiReplace;
 
 /**
@@ -48,18 +47,20 @@ public class EmojiEditText extends EditText {
     public void addTextChangedListener(TextWatcher watcher) {
         super.addTextChangedListener(watcher);
     }
-    private CharSequence inputMsg;
 
-    //获取输入的内容 用于显示在TextView
+    private CharSequence inputMsg = "";
+
+    //获取输入的内容 用于显示在TextView, 如果用string接收会自动转化为文本
     public CharSequence getShowInputMsg() {
         return inputMsg;
     }
 
     //获取输入的内容 用于显示发送到服务器
     public String getSendInputMsg() {
-        String result = EmojiReplace.parseEmoji(inputMsg.toString());
+        String result = inputMsg.toString();
         return result;
     }
+
     @Override
     public Editable getText() {
         return super.getText();
@@ -76,18 +77,20 @@ public class EmojiEditText extends EditText {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             CharSequence input = s.subSequence(start, start + count);
-            inputMsg=s;
+            inputMsg = s;
             if (TextUtils.isEmpty(input) || isChange) {
                 isChange = false;
                 return;
             }
+            SpannableStringBuilder emojinIcon = EmojiReplace.replaceEmoji(input.toString());
+            if (emojinIcon == null || emojinIcon.length() == 0) {
+                return;
+            }
             isChange = true;
-            String emojinTag = EmojiReplace.parseEmoji(input.toString());
-            SpannableStringBuilder emojinIcon = EmojiIcon.convertToEmoji(emojinTag, context);
             SpannableStringBuilder result = new SpannableStringBuilder(s);
             result.replace(start, start + count, emojinIcon);
             setText(result);
-            setSelection(start + emojinIcon.length());
+            setSelection(start + (emojinIcon.length()));
             Log.e("onTextChanged:msg:" + s, "start:" + start + " count:" + count + " before:" + before + " input:" + input);
         }
 
