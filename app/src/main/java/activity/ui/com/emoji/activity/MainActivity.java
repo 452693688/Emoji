@@ -37,4 +37,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         importTv.setText(result);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CharSequence msg = importEt.getShowInputMsg();
+        if(msg!=null){
+            importEt.setText(msg);
+        }
+    }
 }
