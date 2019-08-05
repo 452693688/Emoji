@@ -14,6 +14,8 @@ public class EditextActivity extends AppCompatActivity implements View.OnClickLi
 
     private EmojiEditText importEt;
     private TextView importTv;
+    private TextView import1Tv;
+    private TextView import2Tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,27 +24,22 @@ public class EditextActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.main_import_btn).setOnClickListener(this);
         importEt = (EmojiEditText) findViewById(R.id.main_import_et);
         importTv = (TextView) findViewById(R.id.main_import_tv);
-
+        import1Tv = (TextView) findViewById(R.id.main_import1_tv);
+        import2Tv = (TextView) findViewById(R.id.main_import2_tv);
     }
 
     @Override
     public void onClick(View v) {
-        String importText = importEt.getSendInputMsg();
         SpannableStringBuilder result = new SpannableStringBuilder();
         result.append("显示为：");
-        result.append(importEt.getShowInputMsg());
-        result.append("\n发送转换为：" + importText);
-        result.append("\n接收转换为：");
-        result.append(EmojiIcon.convertToEmoji(importText));
+        result.append(importEt.getMsgSequence());
         importTv.setText(result);
+        import1Tv.setText("发送转换为:" + importEt.getMsgSequence());
+        SpannableStringBuilder result2 = new SpannableStringBuilder();
+        result2.append("接收转换为：");
+        result2.append(EmojiIcon.convertToEmoji(importEt.getMsgTxt()));
+        import2Tv.setText(result2);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        CharSequence msg = importEt.getShowInputMsg();
-        if(msg!=null){
-            importEt.setText(msg);
-        }
-    }
+
 }

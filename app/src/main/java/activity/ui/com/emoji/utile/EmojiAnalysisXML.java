@@ -57,6 +57,7 @@ public class EmojiAnalysisXML {
                         }
                         if (xmlpull.getName().equals("e")) {
                             fromAttr = xmlpull.nextText();
+                            //Log.e("名称",fromAttr);
                             emos.add(fromAttr);
                             List<Integer> fromCodePoints = new ArrayList<Integer>();
                             if (fromAttr.length() > 6) {

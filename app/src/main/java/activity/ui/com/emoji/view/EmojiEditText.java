@@ -7,14 +7,19 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.EditText;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import activity.ui.com.emoji.utile.EmojiReplace;
 
 /**
  * Created by Administrator on 2016/6/30.
  */
-public class EmojiEditText extends EditText {
+public class EmojiEditText extends android.support.v7.widget.AppCompatEditText {
+    private String tag = "EmojiEditText";
+
     public EmojiEditText(Context context) {
         super(context);
         initEditText(context);
@@ -30,10 +35,6 @@ public class EmojiEditText extends EditText {
         initEditText(context);
     }
 
-    public EmojiEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initEditText(context);
-    }
 
     private Context context;
 
@@ -51,12 +52,12 @@ public class EmojiEditText extends EditText {
     private CharSequence inputMsg = "";
 
     //获取输入的内容 用于显示在TextView, 如果用string接收会自动转化为文本
-    public CharSequence getShowInputMsg() {
+    public CharSequence getMsgSequence() {
         return inputMsg;
     }
 
     //获取输入的内容 用于显示发送到服务器
-    public String getSendInputMsg() {
+    public String getMsgTxt() {
         String result = inputMsg.toString();
         return result;
     }
@@ -71,12 +72,27 @@ public class EmojiEditText extends EditText {
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            Log.e("beforeTextChanged:msg:" + s, "start:" + start + " count:" + count + " after:" + after);
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             CharSequence input = s.subSequence(start, start + count);
+            Log.e(tag, "input1：" + input.toString());
+            try {
+                String  m = URLEncoder.encode(s.toString(), "UTF-8");
+                Log.e(tag, "编码：" + m);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            //解码
+            try {
+                String decodeStr = URLDecoder.decode(s.toString(), "UTF-8");
+                Log.e(tag, "解码1：" + decodeStr);
+                decodeStr = URLDecoder.decode(s.toString(), "UTF-8");
+                Log.e(tag, "解码2：" + decodeStr);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             inputMsg = s;
             if (TextUtils.isEmpty(input) || isChange) {
                 isChange = false;
@@ -86,17 +102,21 @@ public class EmojiEditText extends EditText {
             if (emojinIcon == null || emojinIcon.length() == 0) {
                 return;
             }
+
             isChange = true;
             SpannableStringBuilder result = new SpannableStringBuilder(s);
             result.replace(start, start + count, emojinIcon);
+            Log.e(tag, "------------");
             setText(result);
+            Log.e(tag, "2：" + result);
             setSelection(start + (emojinIcon.length()));
-            Log.e("onTextChanged:msg:" + s, "start:" + start + " count:" + count + " before:" + before + " input:" + input);
+            Log.e(tag, "input2：" + input.toString());
+            Log.e(tag, "input3：" + inputMsg.toString());
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            Log.e("afterTextChanged:msg:" + s, "-------");
+
         }
     }
 }

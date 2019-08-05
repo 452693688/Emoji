@@ -11,7 +11,17 @@
         android:id="@+id/main_import_et"
         />
     <TextView
-        android:id="@+id/main_import_tv"
+    android:id="@+id/main_import_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Hello World!"/>
+    <TextView
+        android:id="@+id/main_import1_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"/>
+    <TextView
+        android:id="@+id/main_import2_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"/>

@@ -39,8 +39,11 @@ public class EmojiReplace {
             return null;
         }
         SpannableStringBuilder sBuilder = new SpannableStringBuilder();
-         boolean isEmoji = false;
+        boolean isEmoji = false;
         int[] codePoints = toCodePointArray(input);
+        for (int i = 0; i < codePoints.length; i++) {
+            Log.e("EmojiReplace", "code=" + codePoints[i]);
+        }
         List<Integer> key = null;
         HashMap<List<Integer>, String> convertMap = EmojiAnalysisXML.getInstance().getConvertMap();
         for (int i = 0; i < codePoints.length; i++) {
@@ -50,12 +53,14 @@ public class EmojiReplace {
                 key.add(codePoints[i + 1]);
                 if (convertMap.containsKey(key)) {
                     String value = convertMap.get(key);
+                    Log.e("EmojiReplace", "value1=" + value);
+
                     ImageSpan emojiIcon = EmojiIcon.emojiIcon(value);
                     if (emojiIcon != null) {
                         String tag = "[e]" + value + "[/e]";
                         sBuilder.append(tag);
-                        int length = sBuilder.length() ;
-                        sBuilder.setSpan(emojiIcon, (length-tag.length()), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        int length = sBuilder.length();
+                        sBuilder.setSpan(emojiIcon, (length - tag.length()), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         isEmoji = true;
                     }
                     i++;
@@ -66,12 +71,13 @@ public class EmojiReplace {
             key.add(codePoints[i]);
             if (convertMap.containsKey(key)) {
                 String value = convertMap.get(key);
+                Log.e("EmojiReplace", "value2=" + value);
                 ImageSpan emojiIcon = EmojiIcon.emojiIcon(value);
                 if (emojiIcon != null) {
                     String tag = "[e]" + value + "[/e]";
                     sBuilder.append(tag);
                     int length = sBuilder.length();
-                    sBuilder.setSpan(emojiIcon, (length-tag.length()), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    sBuilder.setSpan(emojiIcon, (length - tag.length()), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     isEmoji = true;
                 }
                 continue;
