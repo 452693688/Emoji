@@ -4,8 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -46,7 +45,7 @@ public class EmojiReplaceActivity extends AppCompatActivity implements View.OnCl
                 try {
                     String j = URLDecoder.decode(s.toString(), "unicode");
                     importTv.setText(j);
-                    CharSequence z = emojiFilter.filter(s, 0, 0, null, 0, 0);
+                    CharSequence z = onReplaceImoji(s.toString());
                     import2Tv.setText(z);
                     //
                     String str = stringToUnicode(s.toString());
@@ -72,7 +71,7 @@ public class EmojiReplaceActivity extends AppCompatActivity implements View.OnCl
         //1F601 转表情
         String msg3 = String.valueOf(Character.toChars(Integer.parseInt("D83D", 16)));
         String msg4 = String.valueOf(Character.toChars(Integer.parseInt("DE01", 16)));
-         //D83D DE01
+        //D83D DE01
         importTv.setText(msg0 + (msg1 + msg2) + (msg3 + msg4));
         String m1 = decode("\\uD83D\\uDE0A");
         Log.e("uincoed 转中文1", m1);
@@ -153,33 +152,36 @@ public class EmojiReplaceActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    //表情过滤
-    InputFilter emojiFilter = new InputFilter() {
-        Pattern pattern = Pattern.compile(
-                "[\ud83c\udc00-\ud83c\udfff]|" +
-                        "[\ud83d\udc00-\ud83d\udfff]|" +
-                        "[\u2600-\u27ff]",
-                Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
-        Pattern pattern1 = Pattern.compile(
-                "[\u1F601-\u1F64F]",//1F601 - 1F64F
-                Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+    //imoji 会转化为 Surrogates
+    //Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE
+    //对Unicode字符进行大小写不敏感的匹配
+    Pattern pattern = Pattern.compile(
+            "[\ud83c\udc00-\ud83c\udfff]|" +
+                    "[\ud83d\udc00-\ud83d\udfff]|" +
+                    "[\u2600-\u27ff]",
+            Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+    Pattern pattern1 = Pattern.compile(
+            "[1F601-1F64F]",//1F601 - 1F64F
+            Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
 
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart,
-                                   int dend) {
-            String value = source.toString();
-            if (value == null) {
-                return value;
-            }
-            Matcher emojiMatcher = pattern1.matcher(source);
-            while (emojiMatcher.find()) {
-                String emoji = emojiMatcher.group(0);
-                String emojiCode = stringToUnicode(emoji);
-                Log.e("转换成功", emojiCode);
-                value = value.replace(emoji, emojiCode);
-                Log.e("替换成功", value);
-            }
+    //表情替换
+    private String onReplaceImoji(String msg) {
+        if (TextUtils.isEmpty(msg)) {
+            return msg;
+        }
+        String value = msg;
+        if (value == null) {
             return value;
         }
-    };
+        Matcher emojiMatcher = pattern.matcher(msg);
+        while (emojiMatcher.find()) {
+            String emoji = emojiMatcher.group(0);
+            String emojiCode = stringToUnicode(emoji);
+            Log.e("转换成功", emojiCode);
+            value = value.replace(emoji, emojiCode);
+            Log.e("替换成功", value);
+        }
+        return value;
+    }
+
 }
