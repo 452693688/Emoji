@@ -104,7 +104,7 @@ public class EmojiReplace {
         StringBuilder result = new StringBuilder();
         int[] codePoints = toCodePointArray(input);
         List<Integer> key = null;
-        HashMap<List<Integer>, String> convertMap = EmojiAnalysisXML.getInstance().getConvertMap();
+         HashMap<List<Integer>, String> convertMap = EmojiAnalysisXML.getInstance().getConvertMap();
         for (int i = 0; i < codePoints.length; i++) {
             key = new ArrayList<Integer>();
             if (i + 1 < codePoints.length) {

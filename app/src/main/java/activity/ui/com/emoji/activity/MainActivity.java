@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findViewById(R.id.main_emoji_btn).setOnClickListener(this);
         findViewById(R.id.main_editext_btn).setOnClickListener(this);
+        findViewById(R.id.main_editext2_btn).setOnClickListener(this);
     }
 
     @Override
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.main_editext_btn:
                 it.setClass(this,EditextActivity.class);
                 break;
+            case R.id.main_editext2_btn:
+                it.setClass(this,EmojiReplaceActivity.class);
+                break;
+
         }
         startActivity(it);
     }

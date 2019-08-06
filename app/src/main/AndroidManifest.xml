@@ -26,6 +26,7 @@
             android:name=".activity.EditextActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".activity.EmojiReplaceActivity"/>
     </application>
 
 </manifest>

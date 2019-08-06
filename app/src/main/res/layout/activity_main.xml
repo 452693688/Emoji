@@ -18,9 +18,15 @@
         />
 
     <Button
-        android:id="@+id/main_editext_btn"
+    android:id="@+id/main_editext_btn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="展示Editext"
+    />
+    <Button
+        android:id="@+id/main_editext2_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="展示Editext"
+        android:text="表情转换"
         />
 </LinearLayout>
